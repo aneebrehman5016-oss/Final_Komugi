@@ -60,7 +60,6 @@ export default function Home() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onCheckout={() => {
-          setToastMessage('Order must be placed 24 hours before');
           setIsCartOpen(false);
           setIsCheckoutOpen(true);
         }}
