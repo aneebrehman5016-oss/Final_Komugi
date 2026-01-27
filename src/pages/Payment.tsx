@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Copy, CheckCircle, AlertCircle, Upload, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { escapeHtml } from '../utils/sanitize';
 
 interface Order {
   id: string;
@@ -231,9 +232,9 @@ export default function Payment() {
        
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <p className="text-xs text-gray-500 uppercase">Name</p>
-            <p className="font-semibold">{order.name}</p>
+            <p className="font-semibold">{escapeHtml(order.name)}</p>
             <p className="text-xs text-gray-500 uppercase mt-2">Email</p>
-            <p className="font-semibold">{order.email}</p>
+            <p className="font-semibold">{escapeHtml(order.email)}</p>
           </div>
 
       

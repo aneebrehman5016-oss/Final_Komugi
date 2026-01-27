@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, CheckCircle, Clock, Copy, Upload, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { sendOrderEmails } from '../services/emailService';
+import { escapeHtml } from '../utils/sanitize';
 
 interface OrderData {
   formData: {
@@ -220,7 +221,7 @@ export default function DeliveryPayment() {
           <p className="text-gray-600 mb-4">Your payment proof has been received. We'll verify it shortly and prepare your delivery.</p>
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-600 mb-1">Order Token:</p>
-            <p className="font-mono font-bold text-amber-900 text-lg">{orderToken}</p>
+            <p className="font-mono font-bold text-amber-900 text-lg">{escapeHtml(orderToken)}</p>
           </div>
           <button
             onClick={() => navigate('/')}
@@ -302,7 +303,7 @@ export default function DeliveryPayment() {
                 {orderData.cartItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      {item.name} x {item.quantity}
+                      {escapeHtml(item.name)} x {item.quantity}
                     </span>
                     <span className="font-medium text-gray-800">
                       {item.price * item.quantity} PKR
