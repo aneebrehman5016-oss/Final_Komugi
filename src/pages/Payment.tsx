@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Copy, CheckCircle, AlertCircle, Upload, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { escapeHtml } from '../utils/sanitize';
+import { useSession } from '../context/SessionContext';
 
 interface Order {
   id: string;
@@ -18,6 +19,7 @@ interface Order {
 const EASYPAISA_NUMBER = '03368862917';
 
 export default function Payment() {
+  const { sessionId } = useSession();
   const [searchParams] = useSearchParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ export default function Payment() {
       const token =
         searchParams.get('ref') || localStorage.getItem('order_token');
 
-      if (!token) {
+      if (!token || !sessionId) {
         setExpired(true);
         setLoading(false);
         return;
@@ -46,6 +48,7 @@ export default function Payment() {
           'id, order_token, payment_expires_at, payment_status, name, email, payment_proof_url, payment_proof_submitted_at'
         )
         .eq('order_token', token)
+        .eq('session_id', sessionId)
         .maybeSingle();
 
       if (!data) {
@@ -65,7 +68,7 @@ export default function Payment() {
     };
 
     fetchOrder();
-  }, [searchParams]);
+  }, [searchParams, sessionId]);
 
  
   useEffect(() => {

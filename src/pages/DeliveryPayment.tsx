@@ -4,6 +4,7 @@ import { AlertCircle, CheckCircle, Clock, Copy, Upload, Loader } from 'lucide-re
 import { supabase } from '../lib/supabase';
 import { sendOrderEmails } from '../services/emailService';
 import { escapeHtml, validateInput } from '../utils/sanitize';
+import { useSession } from '../context/SessionContext';
 
 interface OrderData {
   formData: {
@@ -26,6 +27,7 @@ const DELIVERY_CHARGE = 300;
 
 export default function DeliveryPayment() {
   const navigate = useNavigate();
+  const { sessionId } = useSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [orderData, setOrderData] = useState<OrderData | null>(null);
@@ -163,6 +165,7 @@ export default function DeliveryPayment() {
             payment_proof_submitted_at: new Date().toISOString(),
             delivery_fee: DELIVERY_CHARGE,
             total_amount: total,
+            session_id: sessionId,
           },
         ])
         .select('id, order_token')

@@ -4,6 +4,7 @@ import { AlertCircle, CheckCircle, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { sendOrderEmails } from '../services/emailService';
 import { escapeHtml, validateInput } from '../utils/sanitize';
+import { useSession } from '../context/SessionContext';
 
 interface OrderData {
   formData: {
@@ -23,6 +24,7 @@ interface OrderData {
 
 export default function PickupPayment() {
   const navigate = useNavigate();
+  const { sessionId } = useSession();
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<'cash' | 'online' | null>(null);
   const [loading, setLoading] = useState(false);
@@ -90,6 +92,7 @@ export default function PickupPayment() {
               payment_expires_at: paymentExpiresAt.toISOString(),
               delivery_fee: 0,
               total_amount: total,
+              session_id: sessionId,
             },
           ])
           .select('id, order_token')
