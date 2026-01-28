@@ -1,6 +1,6 @@
 export default function AnnouncementBar() {
   return (
-    <div className="w-full bg-orange-600 text-white py-4 px-4 overflow-hidden relative z-50">
+    <div className="fixed top-0 left-0 w-full bg-orange-600 text-white py-3 px-4 overflow-hidden z-50">
       <style>{`
         @keyframes scroll-left {
           0% {
@@ -16,7 +16,7 @@ export default function AnnouncementBar() {
           white-space: nowrap;
         }
       `}</style>
-      <div className="announcement-scroll font-semibold text-sm md:text-base">
+      <div className="announcement-scroll font-semibold text-xs sm:text-sm">
         Enjoy up to 50% off on selected items – Limited time offer! • Enjoy up to 50% off on selected items – Limited time offer! •
       </div>
     </div>

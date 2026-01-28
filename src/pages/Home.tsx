@@ -49,6 +49,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <AnnouncementBar />
       <Navbar cartItemsCount={totalItemsInCart} onCartClick={() => setIsCartOpen(true)} />
+      <div className="pt-28"></div>
       <Hero />
       <FeaturedProducts onAddToCart={handleAddToCart} />
       <MenuSection onAddToCart={handleAddToCart} />
