@@ -60,11 +60,11 @@ export default function PickupPayment() {
 
     try {
       if (selectedPayment === 'cash') {
-        const nameValidation = validateInput(orderData.formData.name);
-        const emailValidation = validateInput(orderData.formData.email);
-        const phoneValidation = validateInput(orderData.formData.phone);
-        const addressValidation = validateInput(orderData.formData.address);
-        const instructionsValidation = validateInput(orderData.formData.specialInstructions);
+        const nameValidation = validateInput(orderData.formData.name, 'name');
+        const emailValidation = validateInput(orderData.formData.email, 'email');
+        const phoneValidation = validateInput(orderData.formData.phone, 'phone');
+        const addressValidation = validateInput(orderData.formData.address, 'address');
+        const instructionsValidation = validateInput(orderData.formData.specialInstructions, 'specialInstructions');
 
         if (!nameValidation.isValid || !emailValidation.isValid || !phoneValidation.isValid || !addressValidation.isValid || !instructionsValidation.isValid) {
           setError('Invalid input data. Please try again.');

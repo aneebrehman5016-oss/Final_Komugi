@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
-import { validateInput } from '../utils/sanitize';
+import { validateInput, INPUT_LIMITS } from '../utils/sanitize';
 
 interface FormData {
   name: string;
@@ -57,11 +57,11 @@ export default function Checkout({ cartItems, onClose }: CheckoutProps) {
     setLoading(true);
 
     try {
-      const nameValidation = validateInput(formData.name);
-      const emailValidation = validateInput(formData.email);
-      const phoneValidation = validateInput(formData.phone);
-      const addressValidation = validateInput(formData.address);
-      const instructionsValidation = validateInput(formData.specialInstructions);
+      const nameValidation = validateInput(formData.name, 'name');
+      const emailValidation = validateInput(formData.email, 'email');
+      const phoneValidation = validateInput(formData.phone, 'phone');
+      const addressValidation = validateInput(formData.address, 'address');
+      const instructionsValidation = validateInput(formData.specialInstructions, 'specialInstructions');
 
       if (!nameValidation.isValid || !emailValidation.isValid || !phoneValidation.isValid || !addressValidation.isValid || !instructionsValidation.isValid) {
         setError('Input contains disallowed characters. Please remove any HTML, scripts, or special patterns.');
@@ -116,15 +116,16 @@ export default function Checkout({ cartItems, onClose }: CheckoutProps) {
             </div>
           )}
 
-          <input name="name" placeholder="Full Name" value={formData.name} onChange={handleInputChange} required className={inputClass} />
-          <input name="email" type="email" placeholder="Email Address" value={formData.email} onChange={handleInputChange} required className={inputClass} />
-          <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} required className={inputClass} />
+          <input name="name" placeholder="Full Name" value={formData.name} onChange={handleInputChange} maxLength={INPUT_LIMITS.name} required className={inputClass} />
+          <input name="email" type="email" placeholder="Email Address" value={formData.email} onChange={handleInputChange} maxLength={INPUT_LIMITS.email} required className={inputClass} />
+          <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} maxLength={INPUT_LIMITS.phone} required className={inputClass} />
 
           <textarea
             name="address"
             placeholder="Delivery Address"
             value={formData.address}
             onChange={handleInputChange}
+            maxLength={INPUT_LIMITS.address}
             rows={3}
             required
             className={`${inputClass} resize-none`}
@@ -135,6 +136,7 @@ export default function Checkout({ cartItems, onClose }: CheckoutProps) {
             placeholder="Special Instructions (optional)"
             value={formData.specialInstructions}
             onChange={handleInputChange}
+            maxLength={INPUT_LIMITS.specialInstructions}
             rows={3}
             className={`${inputClass} resize-none`}
           />

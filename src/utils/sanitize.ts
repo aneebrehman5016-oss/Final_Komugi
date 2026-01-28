@@ -12,7 +12,18 @@ export function escapeHtml(text: string | null | undefined): string {
   return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
-export function validateInput(input: string): {
+export const INPUT_LIMITS = {
+  name: 100,
+  email: 254,
+  phone: 20,
+  address: 500,
+  specialInstructions: 500,
+};
+
+export function validateInput(
+  input: string,
+  fieldType: keyof typeof INPUT_LIMITS
+): {
   isValid: boolean;
   sanitized: string;
   error?: string;
@@ -22,6 +33,15 @@ export function validateInput(input: string): {
   }
 
   const trimmed = input.trim();
+  const maxLength = INPUT_LIMITS[fieldType];
+
+  if (trimmed.length > maxLength) {
+    return {
+      isValid: false,
+      sanitized: '',
+      error: `Input exceeds maximum length of ${maxLength} characters`,
+    };
+  }
 
   const dangerousPatterns = [
     /<script/i,
