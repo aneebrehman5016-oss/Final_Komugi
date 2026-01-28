@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, CheckCircle, Clock, Copy, Upload, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { sendOrderEmails } from '../services/emailService';
-import { escapeHtml } from '../utils/sanitize';
+import { escapeHtml, validateInput } from '../utils/sanitize';
 
 interface OrderData {
   formData: {
@@ -133,6 +133,17 @@ export default function DeliveryPayment() {
       const paymentExpiresAt = new Date();
       paymentExpiresAt.setMinutes(paymentExpiresAt.getMinutes() + 10);
 
+      const nameValidation = validateInput(orderData.formData.name);
+      const emailValidation = validateInput(orderData.formData.email);
+      const phoneValidation = validateInput(orderData.formData.phone);
+      const addressValidation = validateInput(orderData.formData.address);
+      const instructionsValidation = validateInput(orderData.formData.specialInstructions);
+
+      if (!nameValidation.isValid || !emailValidation.isValid || !phoneValidation.isValid || !addressValidation.isValid || !instructionsValidation.isValid) {
+        setError('Invalid input data. Please try again.');
+        return;
+      }
+
       const subtotal = calculateSubtotal();
       const total = calculateTotal();
 
@@ -140,11 +151,11 @@ export default function DeliveryPayment() {
         .from('orders')
         .insert([
           {
-            name: orderData.formData.name,
-            email: orderData.formData.email,
-            phone: orderData.formData.phone,
-            address: orderData.formData.address,
-            special_instructions: orderData.formData.specialInstructions,
+            name: nameValidation.sanitized,
+            email: emailValidation.sanitized,
+            phone: phoneValidation.sanitized,
+            address: addressValidation.sanitized,
+            special_instructions: instructionsValidation.sanitized,
             payment_method: 'online',
             payment_status: 'pending_verification',
             payment_expires_at: paymentExpiresAt.toISOString(),

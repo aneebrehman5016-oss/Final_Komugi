@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
+import { validateInput } from '../utils/sanitize';
 
 interface FormData {
   name: string;
@@ -56,9 +57,29 @@ export default function Checkout({ cartItems, onClose }: CheckoutProps) {
     setLoading(true);
 
     try {
+      const nameValidation = validateInput(formData.name);
+      const emailValidation = validateInput(formData.email);
+      const phoneValidation = validateInput(formData.phone);
+      const addressValidation = validateInput(formData.address);
+      const instructionsValidation = validateInput(formData.specialInstructions);
+
+      if (!nameValidation.isValid || !emailValidation.isValid || !phoneValidation.isValid || !addressValidation.isValid || !instructionsValidation.isValid) {
+        setError('Input contains disallowed characters. Please remove any HTML, scripts, or special patterns.');
+        return;
+      }
+
+      const sanitizedFormData = {
+        name: nameValidation.sanitized,
+        email: emailValidation.sanitized,
+        phone: phoneValidation.sanitized,
+        address: addressValidation.sanitized,
+        specialInstructions: instructionsValidation.sanitized,
+        paymentMethod: formData.paymentMethod,
+      };
+
       if (formData.paymentMethod === 'cash') {
         localStorage.setItem('pickup_order_data', JSON.stringify({
-          formData,
+          formData: sanitizedFormData,
           cartItems,
         }));
         navigate('/pickup-payment');
@@ -67,7 +88,7 @@ export default function Checkout({ cartItems, onClose }: CheckoutProps) {
 
       if (formData.paymentMethod === 'delivery') {
         localStorage.setItem('delivery_order_data', JSON.stringify({
-          formData,
+          formData: sanitizedFormData,
           cartItems,
         }));
         navigate('/delivery-payment');
